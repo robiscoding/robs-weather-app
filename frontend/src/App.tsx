@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import "./App.css";
 
 function App() {
@@ -6,9 +7,7 @@ function App() {
       <section id="center">
         <div>
           <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          <Button onClick={() => alert("Hello, world!")}>Click me</Button>
         </div>
       </section>
     </>
