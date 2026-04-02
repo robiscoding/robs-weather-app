@@ -1,8 +1,7 @@
-import type { Coordinates, WeatherForecast } from "@robiscoding/shared";
-import type { WeatherProvider } from "../WeatherProvider.js";
+import type { WeatherForecast } from "@robiscoding/shared";
+import type { WeatherProvider, WeatherQuery } from "../WeatherProvider.js";
 
-const DEFAULT_FORECAST: Omit<WeatherForecast, "timestamp" | "location"> = {
-  units: "imperial",
+const DEFAULT_FORECAST: Omit<WeatherForecast, "timestamp" | "location" | "units"> = {
   condition: { code: 802, label: "Partly Cloudy" },
   temp: 78,
   feels_like: 81,
@@ -16,11 +15,12 @@ const DEFAULT_FORECAST: Omit<WeatherForecast, "timestamp" | "location"> = {
 export class MockWeatherProvider implements WeatherProvider {
   constructor(private readonly overrides?: Partial<WeatherForecast>) {}
 
-  async getWeather(location: Coordinates): Promise<WeatherForecast> {
+  async getWeather(query: WeatherQuery): Promise<WeatherForecast> {
     return {
       ...DEFAULT_FORECAST,
+      units: query.units,
       timestamp: new Date().toISOString(),
-      location,
+      location: { lat: query.lat, lon: query.lon },
       ...this.overrides,
     };
   }

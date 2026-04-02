@@ -19,7 +19,7 @@ export function WeatherLanding({
   onSubmit,
 }: WeatherLandingProps) {
   return (
-    <div className="flex flex-col gap-3 w-full max-w-sm">
+    <div className="flex w-full flex-col gap-3">
       {error && (
         <Alert variant="destructive" className="bg-white/10 border-red-300/60 text-white *:data-[slot=alert-description]:text-white/90">
           <AlertCircle />

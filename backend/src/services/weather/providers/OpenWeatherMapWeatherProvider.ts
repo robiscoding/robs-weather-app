@@ -1,13 +1,14 @@
-import type { Coordinates, WeatherForecast } from "@robiscoding/shared";
-import type { WeatherProvider } from "../WeatherProvider.js";
+import type { WeatherForecast } from "@robiscoding/shared";
+import type { WeatherProvider, WeatherQuery } from "../WeatherProvider.js";
 
 const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 
 export class OpenWeatherMapWeatherProvider implements WeatherProvider {
   constructor(private readonly apiKey: string) {}
 
-  async getWeather(location: Coordinates): Promise<WeatherForecast> {
-    const url = `${BASE_URL}?lat=${location.lat}&lon=${location.lon}&appid=${this.apiKey}&units=imperial`;
+  async getWeather(query: WeatherQuery): Promise<WeatherForecast> {
+    const location = { lat: query.lat, lon: query.lon };
+    const url = `${BASE_URL}?lat=${location.lat}&lon=${location.lon}&appid=${this.apiKey}&units=${query.units}`;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -15,17 +16,18 @@ export class OpenWeatherMapWeatherProvider implements WeatherProvider {
     }
 
     const raw = (await response.json()) as OpenWeatherMapResponse;
-    return this.mapToWeatherForecast(raw, location);
+    return this.mapToWeatherForecast(raw, location, query.units);
   }
 
   private mapToWeatherForecast(
     raw: OpenWeatherMapResponse,
-    location: Coordinates,
+    location: { lat: number; lon: number },
+    units: WeatherQuery["units"],
   ): WeatherForecast {
     return {
       timestamp: new Date(raw.dt * 1000).toISOString(),
       location,
-      units: "imperial",
+      units,
       condition: {
         code: raw.weather[0].id,
         label: raw.weather[0].description,

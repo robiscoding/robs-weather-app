@@ -1,5 +1,7 @@
-import type { Coordinates, WeatherForecast } from "@robiscoding/shared";
+import type { Coordinates, WeatherForecast, WeatherUnits } from "@robiscoding/shared";
+
+export type WeatherQuery = Coordinates & { units: WeatherUnits };
 
 export interface WeatherProvider {
-  getWeather(location: Coordinates): Promise<WeatherForecast>;
+  getWeather(query: WeatherQuery): Promise<WeatherForecast>;
 }

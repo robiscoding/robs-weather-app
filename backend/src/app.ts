@@ -13,7 +13,13 @@ export function createApp(
   locationProvider: LocationProvider,
 ): Express {
   const app = express();
-  app.use(cors());
+  app.use(
+    cors({
+      origin: process.env.APP_URL || "http://localhost:5173",
+      methods: ["GET", "OPTIONS"],
+      allowedHeaders: ["Content-Type"],
+    }),
+  );
   app.use(express.json());
 
   app.use("/api/weather", createWeatherRouter(weatherProvider));

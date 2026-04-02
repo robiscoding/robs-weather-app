@@ -20,7 +20,7 @@ const MOCK_LOCATION = {
 const MOCK_WEATHER: WeatherForecast = {
   timestamp: "2026-04-02T12:00:00Z",
   location: MOCK_COORDS,
-  units: "imperial",
+  units: "metric",
   condition: { code: 800, label: "Clear sky" },
   temp: 72,
   feels_like: 70,
@@ -106,9 +106,30 @@ describe("Geolocation success flow", () => {
     geoResolves();
     renderWeatherPage();
     await waitFor(() =>
-      expect(vi.mocked(WeatherApi.fetchWeather)).toHaveBeenCalledWith(
-        MOCK_COORDS,
-      ),
+      expect(vi.mocked(WeatherApi.fetchWeather)).toHaveBeenCalledWith({
+        ...MOCK_COORDS,
+        units: "imperial",
+      }),
+    );
+  });
+
+  it("refetches weather when units change", async () => {
+    geoResolves();
+    const user = userEvent.setup();
+    renderWeatherPage();
+    await waitFor(() =>
+      expect(screen.getByText("Clear sky")).toBeInTheDocument(),
+    );
+    vi.mocked(WeatherApi.fetchWeather).mockClear();
+    await user.click(screen.getByLabelText("Units"));
+    await user.click(
+      await screen.findByRole("option", { name: /Metric \(°C\)/i }),
+    );
+    await waitFor(() =>
+      expect(vi.mocked(WeatherApi.fetchWeather)).toHaveBeenCalledWith({
+        ...MOCK_COORDS,
+        units: "metric",
+      }),
     );
   });
 
@@ -184,9 +205,11 @@ describe("Form submission flow", () => {
     await user.click(screen.getByRole("button", { name: /get weather/i }));
 
     await waitFor(() =>
-      expect(vi.mocked(WeatherApi.fetchWeather)).toHaveBeenCalledWith(
-        MOCK_LOCATION,
-      ),
+      expect(vi.mocked(WeatherApi.fetchWeather)).toHaveBeenCalledWith({
+        lat: MOCK_LOCATION.lat,
+        lon: MOCK_LOCATION.lon,
+        units: "imperial",
+      }),
     );
   });
 

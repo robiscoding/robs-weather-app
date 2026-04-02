@@ -26,6 +26,14 @@ describe("GET /api/weather", () => {
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty("error");
     });
+
+    it("returns 400 when units is invalid", async () => {
+      const res = await request(app).get(
+        "/api/weather?lat=35.7796&lon=-78.6382&units=nope",
+      );
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("error");
+    });
   });
 
   describe("successful response", () => {
@@ -46,7 +54,7 @@ describe("GET /api/weather", () => {
         data: {
           timestamp: expect.any(String),
           location: coords,
-          units: "imperial",
+          units: "metric",
           condition: { code: expect.any(Number), label: expect.any(String) },
           temp: expect.any(Number),
           feels_like: expect.any(Number),
@@ -77,6 +85,14 @@ describe("GET /api/weather", () => {
         `/api/weather?lat=${coords.lat}&lon=${coords.lon}`,
       );
       expect(res.body.data.location).toEqual(coords);
+    });
+
+    it("returns units from the units query param when provided", async () => {
+      const res = await request(app).get(
+        `/api/weather?lat=${coords.lat}&lon=${coords.lon}&units=imperial`,
+      );
+      expect(res.status).toBe(200);
+      expect(res.body.data.units).toBe("imperial");
     });
 
     it("returns 200 for boundary coordinates (0, 0)", async () => {

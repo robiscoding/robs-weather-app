@@ -25,9 +25,12 @@ export function createWeatherRouter(provider: WeatherProvider): Router {
     "/",
     validateGetWeatherRequest,
     async (req: Request, res: Response<GetWeatherResponse>) => {
-      const lat = Number(req.query.lat);
-      const lon = Number(req.query.lon);
-      const forecast = await provider.getWeather({ lat, lon });
+      const q = getWeatherRequestSchema.parse(req.query);
+      const forecast = await provider.getWeather({
+        lat: Number(q.lat),
+        lon: Number(q.lon),
+        units: q.units ?? "metric",
+      });
       return res.json({ data: forecast });
     },
   );

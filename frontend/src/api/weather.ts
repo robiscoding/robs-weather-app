@@ -3,13 +3,19 @@ import type {
   Coordinates,
   GetWeatherResponse,
   WeatherForecast,
+  WeatherUnits,
 } from "@robiscoding/shared";
 
 export async function fetchWeather({
   lat,
   lon,
-}: Coordinates): Promise<WeatherForecast> {
-  const q = new URLSearchParams({ lat: lat.toString(), lon: lon.toString() });
+  units,
+}: Coordinates & { units: WeatherUnits }): Promise<WeatherForecast> {
+  const q = new URLSearchParams({
+    lat: lat.toString(),
+    lon: lon.toString(),
+    units,
+  });
   const response = await apiRequest<GetWeatherResponse>(
     `/api/weather?${q.toString()}`,
     {

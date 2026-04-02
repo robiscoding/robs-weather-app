@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import type { WeatherForecast } from "@robiscoding/shared";
 import {
   ArrowDown,
@@ -13,8 +12,6 @@ import {
   Compass,
   Droplets,
   Eye,
-  MapPin,
-  RotateCcw,
   Sun,
   Wind,
 } from "lucide-react";
@@ -59,15 +56,9 @@ function unitLabels(units: string) {
 
 type WeatherDisplayProps = {
   weather: WeatherForecast;
-  locationName?: string;
-  onChangeLocation: () => void;
 };
 
-export function WeatherDisplay({
-  weather,
-  locationName,
-  onChangeLocation,
-}: WeatherDisplayProps) {
+export function WeatherDisplay({ weather }: WeatherDisplayProps) {
   const u = unitLabels(weather.units);
 
   const visibility =
@@ -78,27 +69,7 @@ export function WeatherDisplay({
       : null;
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col items-center gap-8">
-      <div className="w-full flex flex-col items-center gap-2">
-        <div className="flex items-center gap-1.5 text-white/70">
-          <MapPin className="h-4 w-4 shrink-0" />
-          <span className="text-sm font-medium tracking-wide">
-            {locationName ??
-              `${weather.location.lat.toFixed(2)}, ${weather.location.lon.toFixed(2)}`}
-          </span>
-        </div>
-        <Button
-          type="button"
-          onClick={onChangeLocation}
-          variant="outline"
-          size="sm"
-          className="border-white/45 bg-white/15 text-white shadow-sm backdrop-blur-sm hover:bg-white/25 hover:text-white hover:border-white/60 focus-visible:border-white/70 focus-visible:ring-white/35"
-        >
-          <RotateCcw className="opacity-90" aria-hidden />
-          Change location
-        </Button>
-      </div>
-
+    <div className="mx-auto flex w-full max-w-lg flex-col items-center gap-8">
       <div className="flex flex-col items-center gap-1">
         <WeatherConditionIcon code={weather.condition.code} />
         <p className="text-7xl sm:text-[7rem] leading-none font-extralight text-white tracking-tighter">

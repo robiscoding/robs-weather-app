@@ -36,6 +36,7 @@ export const weatherForecastSchema = z.object({
 export const getWeatherRequestSchema = z.object({
   lat: z.string(),
   lon: z.string(),
+  units: weatherUnitsSchema.optional(),
 });
 
 export const getWeatherResponseSchema = z.object({
