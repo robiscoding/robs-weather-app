@@ -1,8 +1,10 @@
 import * as LocationApi from "@/api/location";
 import * as WeatherApi from "@/api/weather";
 import type { WeatherForecast } from "@palmetto/shared";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import WeatherPage from "./WeatherPage";
 
@@ -29,6 +31,19 @@ const MOCK_WEATHER: WeatherForecast = {
   wind: { speed: 5, deg: 180, gust: 8 },
 };
 
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+}
+
+function renderWeatherPage() {
+  return render(<WeatherPage />, { wrapper: createWrapper() });
+}
+
 function geoRejects() {
   vi.mocked(LocationApi.getBrowserLocation).mockRejectedValue(
     new Error("denied"),
@@ -48,7 +63,7 @@ beforeEach(() => {
 describe("AppHeader always renders", () => {
   it("shows the app title in the landing state (geo denied)", async () => {
     geoRejects();
-    render(<WeatherPage />);
+    renderWeatherPage();
     expect(
       screen.getByRole("heading", { name: /rob's weather app/i }),
     ).toBeInTheDocument();
@@ -56,7 +71,7 @@ describe("AppHeader always renders", () => {
 
   it("shows the app title after geolocation succeeds and weather is displayed", async () => {
     geoResolves();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(screen.getByText("Clear sky")).toBeInTheDocument(),
     );
@@ -69,7 +84,7 @@ describe("AppHeader always renders", () => {
 describe("Geolocation success flow", () => {
   it("calls getBrowserLocation once on mount", async () => {
     geoResolves();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(vi.mocked(LocationApi.getBrowserLocation)).toHaveBeenCalledTimes(
         1,
@@ -79,7 +94,7 @@ describe("Geolocation success flow", () => {
 
   it("calls reverseGeocode with the browser coords", async () => {
     geoResolves();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(vi.mocked(LocationApi.reverseGeocode)).toHaveBeenCalledWith(
         MOCK_COORDS,
@@ -89,7 +104,7 @@ describe("Geolocation success flow", () => {
 
   it("calls fetchWeather with the browser coords", async () => {
     geoResolves();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(vi.mocked(WeatherApi.fetchWeather)).toHaveBeenCalledWith(
         MOCK_COORDS,
@@ -99,7 +114,7 @@ describe("Geolocation success flow", () => {
 
   it("renders WeatherDisplay after geolocation succeeds", async () => {
     geoResolves();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(screen.getByText("Clear sky")).toBeInTheDocument(),
     );
@@ -108,7 +123,7 @@ describe("Geolocation success flow", () => {
 
   it("displays the reverse-geocoded location name", async () => {
     geoResolves();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(screen.getByText("Charlotte, NC, USA")).toBeInTheDocument(),
     );
@@ -118,7 +133,7 @@ describe("Geolocation success flow", () => {
 describe("Geolocation denied / landing state", () => {
   it("shows the location search form when geolocation is denied", async () => {
     geoRejects();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(
         screen.getByRole("button", { name: /get weather/i }),
@@ -129,7 +144,7 @@ describe("Geolocation denied / landing state", () => {
 
   it("submit button is disabled when the input is empty", async () => {
     geoRejects();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(
         screen.getByRole("button", { name: /get weather/i }),
@@ -147,9 +162,9 @@ describe("Form submission flow", () => {
 
   it("calls fetchLocation with the typed query on submit", async () => {
     const user = userEvent.setup();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
-      expect(screen.getByRole("textbox")).toBeInTheDocument(),
+      expect(screen.getByRole("textbox")).not.toBeDisabled(),
     );
 
     await user.type(screen.getByRole("textbox"), "Charlotte, NC");
@@ -164,9 +179,9 @@ describe("Form submission flow", () => {
 
   it("calls fetchWeather with coords from fetchLocation result", async () => {
     const user = userEvent.setup();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
-      expect(screen.getByRole("textbox")).toBeInTheDocument(),
+      expect(screen.getByRole("textbox")).not.toBeDisabled(),
     );
 
     await user.type(screen.getByRole("textbox"), "Charlotte, NC");
@@ -181,9 +196,9 @@ describe("Form submission flow", () => {
 
   it("renders WeatherDisplay after a successful form search", async () => {
     const user = userEvent.setup();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
-      expect(screen.getByRole("textbox")).toBeInTheDocument(),
+      expect(screen.getByRole("textbox")).not.toBeDisabled(),
     );
 
     await user.type(screen.getByRole("textbox"), "Charlotte, NC");
@@ -203,9 +218,9 @@ describe("Form submission flow", () => {
     );
 
     const user = userEvent.setup();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
-      expect(screen.getByRole("textbox")).toBeInTheDocument(),
+      expect(screen.getByRole("textbox")).not.toBeDisabled(),
     );
 
     await user.type(screen.getByRole("textbox"), "Charlotte, NC");
@@ -220,7 +235,7 @@ describe("Form submission flow", () => {
 describe("Change location flow", () => {
   it('clicking "Change selected location" returns to the search form', async () => {
     geoResolves();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(screen.getByText("Clear sky")).toBeInTheDocument(),
     );
@@ -237,7 +252,7 @@ describe("Change location flow", () => {
 
   it("AppHeader heading remains visible after returning to the form", async () => {
     geoResolves();
-    render(<WeatherPage />);
+    renderWeatherPage();
     await waitFor(() =>
       expect(screen.getByText("Clear sky")).toBeInTheDocument(),
     );

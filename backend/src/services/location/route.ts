@@ -31,14 +31,21 @@ export function createLocationRouter(provider: LocationProvider): Router {
   router.get(
     "/search",
     validateRequest(searchLocationRequestSchema),
-    async (req: Request, res: Response<SearchLocationResponse>, next: NextFunction) => {
+    async (
+      req: Request,
+      res: Response<SearchLocationResponse>,
+      next: NextFunction,
+    ) => {
       try {
         const q = req.query.q as string;
         const result = await provider.searchLocation(q);
         return res.json({ data: result });
       } catch (err) {
         if (isNoResultsError(err)) {
-          return sendNotFound(res, "No locations found for that query, please try a different one.");
+          return sendNotFound(
+            res,
+            "No locations found for that query, please try a different one.",
+          );
         }
         next(err);
       }
@@ -48,7 +55,11 @@ export function createLocationRouter(provider: LocationProvider): Router {
   router.get(
     "/reverse",
     validateRequest(reverseGeocodeRequestSchema),
-    async (req: Request, res: Response<ReverseGeocodeResponse>, next: NextFunction) => {
+    async (
+      req: Request,
+      res: Response<ReverseGeocodeResponse>,
+      next: NextFunction,
+    ) => {
       try {
         const lat = Number(req.query.lat);
         const lon = Number(req.query.lon);
@@ -56,7 +67,10 @@ export function createLocationRouter(provider: LocationProvider): Router {
         return res.json({ data: result });
       } catch (err) {
         if (isNoResultsError(err)) {
-          return sendNotFound(res, "No locations found for those coordinates, please try searching manually.");
+          return sendNotFound(
+            res,
+            "No locations found for those coordinates, please try searching manually.",
+          );
         }
         next(err);
       }

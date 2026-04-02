@@ -9,73 +9,80 @@ import { WeatherDisplay } from "@/components/Weather/WeatherDisplay";
 import { WeatherLanding } from "@/components/Weather/WeatherLanding";
 import { getErrorMessage } from "@/lib/errorMessages";
 import type { WeatherForecast } from "@palmetto/shared";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+
+function geoLocationIsDenied(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code: number }).code === 1
+  );
+}
+
+type WeatherResult = { weather: WeatherForecast; locationName: string };
 
 export default function WeatherPage() {
-  const [weather, setWeather] = useState<WeatherForecast | null>(null);
   const [locationQuery, setLocationQuery] = useState("");
-  const [locationName, setLocationName] = useState<string | undefined>(
-    undefined,
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [submittedQuery, setSubmittedQuery] = useState("");
+  const [showLanding, setShowLanding] = useState(false);
 
-  useEffect(function attemptBrowserGeolocation() {
-    const tryGeoLocation = async () => {
+  const geoQuery = useQuery<WeatherResult | null>({
+    queryKey: ["weather", "geo"],
+    queryFn: async () => {
+      let coords;
       try {
-        const coords = await getBrowserLocation();
-        setIsLoading(true);
-        const [location, data] = await Promise.all([
-          reverseGeocode(coords),
-          WeatherApi.fetchWeather(coords),
-        ]);
-        setLocationName(location.display_name);
-        setWeather(data);
+        coords = await getBrowserLocation();
       } catch (err) {
-        const denied =
-          typeof err === "object" &&
-          err !== null &&
-          "code" in err &&
-          (err as { code: number }).code === 1;
-        if (denied) {
-          return;
-        }
-        setError(getErrorMessage(err));
-      } finally {
-        setIsLoading(false);
+        if (geoLocationIsDenied(err)) return null;
+        throw err;
       }
-    };
-    tryGeoLocation();
-  }, []);
+      const [location, data] = await Promise.all([
+        reverseGeocode(coords),
+        WeatherApi.fetchWeather(coords),
+      ]);
+      return { weather: data, locationName: location.display_name };
+    },
+    retry: false,
+    staleTime: Infinity,
+  });
 
-  async function handleLocationSearch(e: React.FormEvent) {
+  const searchQuery = useQuery<WeatherResult>({
+    queryKey: ["weather", "search", submittedQuery],
+    queryFn: async () => {
+      const location = await fetchLocation(submittedQuery);
+      const data = await WeatherApi.fetchWeather(location);
+      return { weather: data, locationName: location.display_name };
+    },
+    enabled: !!submittedQuery,
+    retry: false,
+    staleTime: 5000,
+  });
+
+  const activeQuery = submittedQuery ? searchQuery : geoQuery;
+  const result = showLanding ? null : (activeQuery.data ?? null);
+  const isLoading = activeQuery.isFetching;
+  const error = activeQuery.isError ? getErrorMessage(activeQuery.error) : null;
+
+  function handleLocationSearch(e: React.FormEvent) {
     e.preventDefault();
     if (!locationQuery.trim()) return;
-    setIsLoading(true);
-    setError(null);
-    try {
-      const location = await fetchLocation(locationQuery);
-      const data = await WeatherApi.fetchWeather(location);
-      setLocationName(location.display_name);
-      setWeather(data);
-    } catch (err) {
-      setError(getErrorMessage(err));
-    } finally {
-      setIsLoading(false);
-    }
+    setShowLanding(false);
+    setSubmittedQuery(locationQuery);
   }
 
   return (
     <div>
       <AppHeader />
-      {weather ? (
+      {result?.weather ? (
         <WeatherDisplay
-          weather={weather}
-          locationName={locationName}
+          weather={result.weather}
+          locationName={result.locationName}
           onChangeLocation={() => {
-            setWeather(null);
-            setLocationName(undefined);
-            setError(null);
+            setShowLanding(true);
+            setSubmittedQuery("");
+            setLocationQuery("");
           }}
         />
       ) : (
