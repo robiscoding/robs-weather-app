@@ -8,8 +8,7 @@ import {
   type Request,
   type Response,
 } from "express";
-
-export const weatherRoute = Router();
+import type { WeatherProvider } from "./WeatherProvider.js";
 
 function validateGetWeatherRequest(
   req: Request,
@@ -23,29 +22,19 @@ function validateGetWeatherRequest(
   next();
 }
 
-weatherRoute.get(
-  "/",
-  validateGetWeatherRequest,
-  (req: Request, res: Response<GetWeatherResponse>) => {
-    return res.json({
-      data: {
-        timestamp: new Date().toISOString(),
-        location: {
-          lat: Number(req.query.lat),
-          lon: Number(req.query.lon),
-        },
-        condition: { code: 802, label: "Partly Cloudy" },
-        units: "imperial",
-        temp: 78,
-        feels_like: 81,
-        temp_min: 72,
-        temp_max: 84,
-        humidity: 65,
-        visibility: 16093,
-        wind: { speed: 12, deg: 210, gust: 18 },
-      },
-    });
-  },
-);
+export function createWeatherRouter(provider: WeatherProvider): Router {
+  const router = Router();
 
-export default weatherRoute;
+  router.get(
+    "/",
+    validateGetWeatherRequest,
+    async (req: Request, res: Response<GetWeatherResponse>) => {
+      const lat = Number(req.query.lat);
+      const lon = Number(req.query.lon);
+      const forecast = await provider.getWeather({ lat, lon });
+      return res.json({ data: forecast });
+    },
+  );
+
+  return router;
+}

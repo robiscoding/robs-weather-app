@@ -1,9 +1,11 @@
 import request from "supertest";
 import { describe, expect, it } from "vitest";
 import { createApp } from "./app.js";
+import { MockWeatherProvider } from "./services/weather/providers/MockWeatherProvider.js";
 
 describe("GET /api/weather", () => {
-  const app = createApp();
+  const provider = new MockWeatherProvider();
+  const app = createApp(provider);
 
   describe("validation", () => {
     it("returns 400 when lat and lon are missing", async () => {
@@ -44,7 +46,7 @@ describe("GET /api/weather", () => {
           timestamp: expect.any(String),
           location: coords,
           units: "imperial",
-          condition: { code: 802, label: "Partly Cloudy" },
+          condition: { code: expect.any(Number), label: expect.any(String) },
           temp: expect.any(Number),
           feels_like: expect.any(Number),
           temp_min: expect.any(Number),
@@ -80,6 +82,17 @@ describe("GET /api/weather", () => {
       const res = await request(app).get("/api/weather?lat=0&lon=0");
       expect(res.status).toBe(200);
       expect(res.body.data.location).toEqual({ lat: 0, lon: 0 });
+    });
+
+    it("reflects overrides passed to MockWeatherProvider", async () => {
+      const overriddenApp = createApp(
+        new MockWeatherProvider({ temp: 55, units: "metric" }),
+      );
+      const res = await request(overriddenApp).get(
+        `/api/weather?lat=${coords.lat}&lon=${coords.lon}`,
+      );
+      expect(res.body.data.temp).toBe(55);
+      expect(res.body.data.units).toBe("metric");
     });
   });
 });
