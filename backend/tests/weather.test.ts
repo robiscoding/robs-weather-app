@@ -1,8 +1,8 @@
 import request from "supertest";
 import { describe, expect, it } from "vitest";
-import { createApp } from "./app.js";
-import { MockLocationProvider } from "./services/location/providers/MockLocationProvider.js";
-import { MockWeatherProvider } from "./services/weather/providers/MockWeatherProvider.js";
+import { createApp } from "../src/app.js";
+import { MockLocationProvider } from "../src/services/location/providers/MockLocationProvider.js";
+import { MockWeatherProvider } from "../src/services/weather/providers/MockWeatherProvider.js";
 
 describe("GET /api/weather", () => {
   const provider = new MockWeatherProvider();

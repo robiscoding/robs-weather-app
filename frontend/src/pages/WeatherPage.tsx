@@ -7,6 +7,7 @@ import * as WeatherApi from "@/api/weather";
 import { AppHeader } from "@/components/AppHeader";
 import { WeatherDisplay } from "@/components/Weather/WeatherDisplay";
 import { WeatherLanding } from "@/components/Weather/WeatherLanding";
+import { getErrorMessage } from "@/lib/errorMessages";
 import type { WeatherForecast } from "@palmetto/shared";
 import { useEffect, useState } from "react";
 
@@ -17,6 +18,7 @@ export default function WeatherPage() {
     undefined,
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(function attemptBrowserGeolocation() {
     const tryGeoLocation = async () => {
@@ -29,8 +31,16 @@ export default function WeatherPage() {
         ]);
         setLocationName(location.display_name);
         setWeather(data);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        const denied =
+          typeof err === "object" &&
+          err !== null &&
+          "code" in err &&
+          (err as { code: number }).code === 1;
+        if (denied) {
+          return;
+        }
+        setError(getErrorMessage(err));
       } finally {
         setIsLoading(false);
       }
@@ -42,11 +52,14 @@ export default function WeatherPage() {
     e.preventDefault();
     if (!locationQuery.trim()) return;
     setIsLoading(true);
+    setError(null);
     try {
       const location = await fetchLocation(locationQuery);
       const data = await WeatherApi.fetchWeather(location);
       setLocationName(location.display_name);
       setWeather(data);
+    } catch (err) {
+      setError(getErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -62,12 +75,14 @@ export default function WeatherPage() {
           onChangeLocation={() => {
             setWeather(null);
             setLocationName(undefined);
+            setError(null);
           }}
         />
       ) : (
         <WeatherLanding
           locationQuery={locationQuery}
           isLoading={isLoading}
+          error={error}
           onChange={setLocationQuery}
           onSubmit={handleLocationSearch}
         />

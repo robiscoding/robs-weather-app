@@ -1,3 +1,5 @@
+import type { ErrorResponse } from "@palmetto/shared";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 type Result<T, E = Error> =
@@ -9,20 +11,19 @@ export async function apiRequest<T>(
   options: RequestInit,
 ): Promise<Result<T>> {
   if (!API_URL) {
-    console.error("API_URL is not set");
     return { success: false, error: new Error("API_URL is not set") };
   }
   if (!path || !path.startsWith("/")) {
-    console.error("Invalid path");
     return { success: false, error: new Error("Invalid path") };
   }
   try {
     const response = await fetch(`${API_URL}${path}`, options);
     if (!response.ok) {
-      return {
-        success: false,
-        error: new Error(`HTTP error! status: ${response.status}`),
-      };
+      const body: ErrorResponse = await response.json().catch(() => ({
+        ok: false,
+        error: `HTTP error! status: ${response.status}`,
+      }));
+      return { success: false, error: new Error(body.error) };
     }
     const responseData = await response.json();
     return { success: true, value: responseData };

@@ -16,18 +16,21 @@ export type {
   WeatherUnits,
 } from "./weather.js";
 
+export { errorResponseSchema } from "./errors.js";
+export type { ErrorResponse } from "./errors.js";
+
 export {
   locationResultSchema,
-  searchLocationRequestSchema,
-  searchLocationResponseSchema,
   reverseGeocodeRequestSchema,
   reverseGeocodeResponseSchema,
+  searchLocationRequestSchema,
+  searchLocationResponseSchema,
 } from "./location.js";
 
 export type {
   LocationResult,
-  SearchLocationRequest,
-  SearchLocationResponse,
   ReverseGeocodeRequest,
   ReverseGeocodeResponse,
+  SearchLocationRequest,
+  SearchLocationResponse,
 } from "./location.js";

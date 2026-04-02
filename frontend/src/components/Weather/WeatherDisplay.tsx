@@ -14,7 +14,7 @@ import {
   Droplets,
   Eye,
   MapPin,
-  Search,
+  RotateCcw,
   Sun,
   Wind,
 } from "lucide-react";
@@ -94,7 +94,7 @@ export function WeatherDisplay({
           size="sm"
           className="border-white/45 bg-white/15 text-white shadow-sm backdrop-blur-sm hover:bg-white/25 hover:text-white hover:border-white/60 focus-visible:border-white/70 focus-visible:ring-white/35"
         >
-          <Search className="opacity-90" aria-hidden />
+          <RotateCcw className="opacity-90" aria-hidden />
           Change location
         </Button>
       </div>

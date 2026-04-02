@@ -2,12 +2,8 @@ import {
   getWeatherRequestSchema,
   type GetWeatherResponse,
 } from "@palmetto/shared";
-import {
-  Router,
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express";
+import type { NextFunction, Request, Response } from "express";
+import { Router } from "express";
 import type { WeatherProvider } from "./WeatherProvider.js";
 
 function validateGetWeatherRequest(
