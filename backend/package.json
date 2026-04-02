@@ -12,6 +12,7 @@
     "lint": "tsc -p tsconfig.build.json --noEmit"
   },
   "dependencies": {
+    "@palmetto/shared": "workspace:*",
     "express": "^5.2.1"
   },
   "devDependencies": {
