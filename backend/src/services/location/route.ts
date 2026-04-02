@@ -7,7 +7,12 @@ import {
 import type { NextFunction, Request, Response } from "express";
 import { Router } from "express";
 import { sendNotFound } from "../../lib/errors.js";
+import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import type { LocationProvider } from "./LocationProvider.js";
+
+const rateLimiter = createRateLimiter({
+  max: 100,
+});
 
 function validateRequest(schema: {
   safeParse: (v: unknown) => { error?: unknown };
@@ -30,6 +35,7 @@ export function createLocationRouter(provider: LocationProvider): Router {
 
   router.get(
     "/search",
+    rateLimiter,
     validateRequest(searchLocationRequestSchema),
     async (
       req: Request,
@@ -54,6 +60,7 @@ export function createLocationRouter(provider: LocationProvider): Router {
 
   router.get(
     "/reverse",
+    rateLimiter,
     validateRequest(reverseGeocodeRequestSchema),
     async (
       req: Request,

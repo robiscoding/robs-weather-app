@@ -15,6 +15,7 @@
         "@robiscoding/shared": "workspace:*",
         "cors": "^2.8.6",
         "express": "^5.2.1",
+        "express-rate-limit": "^8.3.2",
         "swagger-ui-express": "^5.0.1",
         "zod-openapi": "^5.4.6"
     },

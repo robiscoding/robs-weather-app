@@ -49,6 +49,7 @@ export default function WeatherPage() {
       ]);
       return { weather: data, locationName: location.display_name };
     },
+    refetchInterval: 1 * 60 * 1000, // automatically refetch every minute
     retry: false,
     staleTime: 2 * 60 * 1000,
   });
@@ -66,6 +67,7 @@ export default function WeatherPage() {
     },
     enabled: !!submittedQuery,
     retry: false,
+    refetchInterval: 1 * 60 * 1000, // automatically refetch every minute
     staleTime: 5 * 60 * 1000,
   });
 
