@@ -10,7 +10,7 @@ export default function WeatherPage() {
   useEffect(function loadWeatherOnMount() {
     const getWeatherForLocation = async () => {
       const coords = await getLocation();
-      const weather = await WeatherApi.getWeather(coords);
+      const weather = await WeatherApi.fetchWeather(coords);
       setWeather(weather);
     };
     getWeatherForLocation();
