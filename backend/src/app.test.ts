@@ -1,11 +1,12 @@
 import request from "supertest";
 import { describe, expect, it } from "vitest";
 import { createApp } from "./app.js";
+import { MockLocationProvider } from "./services/location/providers/MockLocationProvider.js";
 import { MockWeatherProvider } from "./services/weather/providers/MockWeatherProvider.js";
 
 describe("GET /api/weather", () => {
   const provider = new MockWeatherProvider();
-  const app = createApp(provider);
+  const app = createApp(provider, new MockLocationProvider());
 
   describe("validation", () => {
     it("returns 400 when lat and lon are missing", async () => {
@@ -87,6 +88,7 @@ describe("GET /api/weather", () => {
     it("reflects overrides passed to MockWeatherProvider", async () => {
       const overriddenApp = createApp(
         new MockWeatherProvider({ temp: 55, units: "metric" }),
+        new MockLocationProvider(),
       );
       const res = await request(overriddenApp).get(
         `/api/weather?lat=${coords.lat}&lon=${coords.lon}`,

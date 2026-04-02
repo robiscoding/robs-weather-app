@@ -1,4 +1,5 @@
 import { createApp } from "./app.js";
+import { NominatimLocationProvider } from "./services/location/providers/NominatimLocationProvider.js";
 import { OpenWeatherMapWeatherProvider } from "./services/weather/providers/OpenWeatherMapWeatherProvider.js";
 
 const apiKey = process.env.OPENWEATHERMAP_API_KEY;
@@ -7,7 +8,8 @@ if (!apiKey) {
 }
 
 const weatherProvider = new OpenWeatherMapWeatherProvider(apiKey);
-const app = createApp(weatherProvider);
+const locationProvider = new NominatimLocationProvider();
+const app = createApp(weatherProvider, locationProvider);
 const port = Number(process.env.PORT) || 3001;
 
 app.listen(port, () => {

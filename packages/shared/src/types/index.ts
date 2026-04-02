@@ -15,3 +15,19 @@ export type {
   WeatherForecast,
   WeatherUnits,
 } from "./weather.js";
+
+export {
+  locationResultSchema,
+  searchLocationRequestSchema,
+  searchLocationResponseSchema,
+  reverseGeocodeRequestSchema,
+  reverseGeocodeResponseSchema,
+} from "./location.js";
+
+export type {
+  LocationResult,
+  SearchLocationRequest,
+  SearchLocationResponse,
+  ReverseGeocodeRequest,
+  ReverseGeocodeResponse,
+} from "./location.js";
