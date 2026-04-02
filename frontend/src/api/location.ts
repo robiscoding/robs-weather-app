@@ -1,10 +1,10 @@
+import { apiRequest } from "@/lib/apiRequest";
 import type {
   Coordinates,
   LocationResult,
   ReverseGeocodeResponse,
   SearchLocationResponse,
-} from "@palmetto/shared";
-import { apiRequest } from "@/lib/apiRequest";
+} from "@robiscoding/shared";
 
 export async function getBrowserLocation(): Promise<Coordinates> {
   if (!navigator.geolocation) {
@@ -36,7 +36,9 @@ export async function fetchLocation(query: string): Promise<LocationResult> {
   return response.value.data;
 }
 
-export async function reverseGeocode(coords: Coordinates): Promise<LocationResult> {
+export async function reverseGeocode(
+  coords: Coordinates,
+): Promise<LocationResult> {
   const params = new URLSearchParams({
     lat: String(coords.lat),
     lon: String(coords.lon),

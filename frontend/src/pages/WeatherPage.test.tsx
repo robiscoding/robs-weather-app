@@ -1,6 +1,6 @@
 import * as LocationApi from "@/api/location";
 import * as WeatherApi from "@/api/weather";
-import type { WeatherForecast } from "@palmetto/shared";
+import type { WeatherForecast } from "@robiscoding/shared";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -163,9 +163,7 @@ describe("Form submission flow", () => {
   it("calls fetchLocation with the typed query on submit", async () => {
     const user = userEvent.setup();
     renderWeatherPage();
-    await waitFor(() =>
-      expect(screen.getByRole("textbox")).not.toBeDisabled(),
-    );
+    await waitFor(() => expect(screen.getByRole("textbox")).not.toBeDisabled());
 
     await user.type(screen.getByRole("textbox"), "Charlotte, NC");
     await user.click(screen.getByRole("button", { name: /get weather/i }));
@@ -180,9 +178,7 @@ describe("Form submission flow", () => {
   it("calls fetchWeather with coords from fetchLocation result", async () => {
     const user = userEvent.setup();
     renderWeatherPage();
-    await waitFor(() =>
-      expect(screen.getByRole("textbox")).not.toBeDisabled(),
-    );
+    await waitFor(() => expect(screen.getByRole("textbox")).not.toBeDisabled());
 
     await user.type(screen.getByRole("textbox"), "Charlotte, NC");
     await user.click(screen.getByRole("button", { name: /get weather/i }));
@@ -197,9 +193,7 @@ describe("Form submission flow", () => {
   it("renders WeatherDisplay after a successful form search", async () => {
     const user = userEvent.setup();
     renderWeatherPage();
-    await waitFor(() =>
-      expect(screen.getByRole("textbox")).not.toBeDisabled(),
-    );
+    await waitFor(() => expect(screen.getByRole("textbox")).not.toBeDisabled());
 
     await user.type(screen.getByRole("textbox"), "Charlotte, NC");
     await user.click(screen.getByRole("button", { name: /get weather/i }));
@@ -219,9 +213,7 @@ describe("Form submission flow", () => {
 
     const user = userEvent.setup();
     renderWeatherPage();
-    await waitFor(() =>
-      expect(screen.getByRole("textbox")).not.toBeDisabled(),
-    );
+    await waitFor(() => expect(screen.getByRole("textbox")).not.toBeDisabled());
 
     await user.type(screen.getByRole("textbox"), "Charlotte, NC");
     await user.click(screen.getByRole("button", { name: /get weather/i }));

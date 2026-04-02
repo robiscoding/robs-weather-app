@@ -3,7 +3,7 @@ import type {
   Coordinates,
   GetWeatherResponse,
   WeatherForecast,
-} from "@palmetto/shared";
+} from "@robiscoding/shared";
 
 export async function fetchWeather({
   lat,

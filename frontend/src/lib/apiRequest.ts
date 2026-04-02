@@ -1,4 +1,4 @@
-import type { ErrorResponse } from "@palmetto/shared";
+import type { ErrorResponse } from "@robiscoding/shared";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 

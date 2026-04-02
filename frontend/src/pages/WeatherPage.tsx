@@ -8,7 +8,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { WeatherDisplay } from "@/components/Weather/WeatherDisplay";
 import { WeatherLanding } from "@/components/Weather/WeatherLanding";
 import { getErrorMessage } from "@/lib/errorMessages";
-import type { WeatherForecast } from "@palmetto/shared";
+import type { WeatherForecast } from "@robiscoding/shared";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 

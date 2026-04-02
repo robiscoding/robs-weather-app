@@ -1,4 +1,4 @@
-import type { Coordinates, WeatherForecast } from "@palmetto/shared";
+import type { Coordinates, WeatherForecast } from "@robiscoding/shared";
 import type { WeatherProvider } from "../WeatherProvider.js";
 
 const DEFAULT_FORECAST: Omit<WeatherForecast, "timestamp" | "location"> = {

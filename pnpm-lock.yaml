@@ -10,7 +10,7 @@ importers:
 
   backend:
     dependencies:
-      '@palmetto/shared':
+      '@robiscoding/shared':
         specifier: workspace:*
         version: link:../packages/shared
       cors:
@@ -59,7 +59,7 @@ importers:
       '@fontsource-variable/geist':
         specifier: ^5.2.8
         version: 5.2.8
-      '@palmetto/shared':
+      '@robiscoding/shared':
         specifier: workspace:*
         version: link:../packages/shared
       '@tailwindcss/vite':

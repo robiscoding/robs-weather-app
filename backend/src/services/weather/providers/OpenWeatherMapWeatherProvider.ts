@@ -1,4 +1,4 @@
-import type { Coordinates, WeatherForecast } from "@palmetto/shared";
+import type { Coordinates, WeatherForecast } from "@robiscoding/shared";
 import type { WeatherProvider } from "../WeatherProvider.js";
 
 const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";

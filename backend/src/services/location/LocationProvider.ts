@@ -1,4 +1,4 @@
-import type { Coordinates, LocationResult } from "@palmetto/shared";
+import type { Coordinates, LocationResult } from "@robiscoding/shared";
 
 export interface LocationProvider {
   searchLocation(query: string): Promise<LocationResult>;

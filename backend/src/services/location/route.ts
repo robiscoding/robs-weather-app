@@ -3,7 +3,7 @@ import {
   searchLocationRequestSchema,
   type ReverseGeocodeResponse,
   type SearchLocationResponse,
-} from "@palmetto/shared";
+} from "@robiscoding/shared";
 import type { NextFunction, Request, Response } from "express";
 import { Router } from "express";
 import { sendNotFound } from "../../lib/errors.js";

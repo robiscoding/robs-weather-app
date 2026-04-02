@@ -1,7 +1,7 @@
 import {
   getWeatherRequestSchema,
   type GetWeatherResponse,
-} from "@palmetto/shared";
+} from "@robiscoding/shared";
 import type { NextFunction, Request, Response } from "express";
 import { Router } from "express";
 import type { WeatherProvider } from "./WeatherProvider.js";

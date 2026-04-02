@@ -1,4 +1,4 @@
-import type { ErrorResponse } from "@palmetto/shared";
+import type { ErrorResponse } from "@robiscoding/shared";
 import type { Response } from "express";
 
 function toErrorMessage(error: unknown): string {
@@ -19,10 +19,7 @@ export function sendBadRequest(
   });
 }
 
-export function sendNotFound(
-  res: Response,
-  message: string,
-): Response {
+export function sendNotFound(res: Response, message: string): Response {
   return res.status(404).json({
     ok: false,
     error: message,

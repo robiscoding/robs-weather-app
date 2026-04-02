@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import type { WeatherForecast } from "@palmetto/shared";
+import type { WeatherForecast } from "@robiscoding/shared";
 import {
   ArrowDown,
   ArrowUp,

@@ -1,4 +1,4 @@
-import type { Coordinates, LocationResult } from "@palmetto/shared";
+import type { Coordinates, LocationResult } from "@robiscoding/shared";
 import type { LocationProvider } from "../LocationProvider.js";
 
 const DEFAULT_RESULT: LocationResult = {
