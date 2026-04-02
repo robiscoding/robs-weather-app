@@ -103,6 +103,7 @@ The user can select the units for the weather forecast. The available units are:
 - **imperial**: Fahrenheit
 - **standard**: Kelvin
 
-##### Weather Display
+##### Preview
+<img width="722" height="852" alt="Screenshot 2026-04-02 at 15 00 33" src="https://github.com/user-attachments/assets/1e1d9cc0-e509-41e4-bc70-b18b5946c9e4" />
 
-The weather forecast is displayed in a card format. The card contains the following information:
+
