@@ -8,5 +8,8 @@
       "types": "./src/types/index.ts",
       "default": "./src/types/index.ts"
     }
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
   }
 }

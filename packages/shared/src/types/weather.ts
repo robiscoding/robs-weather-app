@@ -1,34 +1,50 @@
-export type WeatherUnits = "metric" | "imperial" | "standard";
+import { z } from "zod";
 
-export type Coordinates = {
-  lat: number;
-  lon: number;
-};
+export const weatherUnitsSchema = z.enum(["metric", "imperial", "standard"]);
 
-export type WeatherCondition = {
-  code: number;
-  label: string;
-  icon?: string;
-};
+export const coordinatesSchema = z.object({
+  lat: z.number(),
+  lon: z.number(),
+});
 
-export type WeatherForecast = {
-  timestamp: string; // ISO string
-  location: Coordinates;
-  units: WeatherUnits;
+export const weatherConditionSchema = z.object({
+  code: z.number(),
+  label: z.string(),
+  icon: z.string().optional(),
+});
 
-  condition: WeatherCondition;
+export const weatherForecastSchema = z.object({
+  timestamp: z.string(), // ISO string
+  location: coordinatesSchema,
+  units: weatherUnitsSchema,
+  condition: weatherConditionSchema,
+  temp: z.number(),
+  feels_like: z.number(),
+  temp_min: z.number(),
+  temp_max: z.number(),
+  humidity: z.number(),
+  visibility: z.number().optional(),
+  wind: z
+    .object({
+      speed: z.number(),
+      deg: z.number(),
+      gust: z.number().optional(),
+    })
+    .optional(),
+});
 
-  temp: number;
-  feels_like: number;
-  temp_min: number;
-  temp_max: number;
+export const getWeatherRequestSchema = z.object({
+  lat: z.string(),
+  lon: z.string(),
+});
 
-  humidity: number;
-  visibility?: number;
+export const getWeatherResponseSchema = z.object({
+  data: weatherForecastSchema,
+});
 
-  wind?: {
-    speed: number;
-    deg: number;
-    gust?: number;
-  };
-};
+export type GetWeatherRequest = z.infer<typeof getWeatherRequestSchema>;
+export type GetWeatherResponse = z.infer<typeof getWeatherResponseSchema>;
+export type WeatherUnits = z.infer<typeof weatherUnitsSchema>;
+export type Coordinates = z.infer<typeof coordinatesSchema>;
+export type WeatherCondition = z.infer<typeof weatherConditionSchema>;
+export type WeatherForecast = z.infer<typeof weatherForecastSchema>;
